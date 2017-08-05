@@ -1,6 +1,5 @@
 package kcomtest;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,12 +11,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static kcomtest.KComTest.log;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 
 /**
  *
@@ -51,7 +46,7 @@ public class KComTestTest {
      * Test of getOptimalChangeFor method, of class KComTest.
      */
     @Test
-    public void testGetOptimalChangeForZero() {
+    public void testGetOptimalChangeFor_ZeroInput() {
         System.out.println("getOptimalChangeFor");
         int pence = 0;
         KComTest instance = new KComTest();
@@ -70,20 +65,21 @@ public class KComTestTest {
     /**
      * Test of run method, of class KComTest.
      */
-    //@Test
+ /*
+    @Test
     public void testRun() {
-        System.out.println("run");
-        String[] args = null;
+
+        String[] args = {"366"};
         KComTest instance = new KComTest();
         try {
-            instance.run(args);
+            instance.run( args );
         } catch (Exception ex) {
-            assert( true );
+            assert( false );
             Logger.getLogger(KComTestTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         assert( false );
     }
-
+*/
     /**
      * Test of getChangeFor method where there is sufficent of each coin available.
      */
@@ -93,7 +89,6 @@ public class KComTestTest {
         setupTestCoinBank();
         KComTest kcomTest = new KComTest();
         kcomTest.setCoinBankFileName( testCoinBankFileName );
-        kcomTest.loadCoinBank();
         Collection<Coin> expResult = new ArrayList<>();
         expResult.add(new Coin(CoinType.POUND,  3 ));
         expResult.add(new Coin(CoinType.FIFTY,  1 ));
@@ -110,6 +105,7 @@ public class KComTestTest {
             // Load in the properties file and check its been changed.
         } catch (Exception ex) {
             Logger.getLogger(KComTestTest.class.getName()).log(Level.SEVERE, null, ex);
+            assert(false);
         }                
     }
 
@@ -122,7 +118,7 @@ public class KComTestTest {
         setupTestCoinBank();
         KComTest kcomTest = new KComTest();
         kcomTest.setCoinBankFileName( testCoinBankFileName );
-        kcomTest.loadCoinBank();
+//        kcomTest.loadCoinBank();
       
         Collection<Coin> result;
         try {
@@ -151,6 +147,7 @@ public class KComTestTest {
             }                                    
         } catch (Exception ex) {
             Logger.getLogger(KComTestTest.class.getName()).log(Level.SEVERE, null, ex);
+            assert(false);            
         }                
     }
     
@@ -163,7 +160,7 @@ public class KComTestTest {
         setupTestCoinBank();
         KComTest kcomTest = new KComTest();
         kcomTest.setCoinBankFileName( testCoinBankFileName );
-        kcomTest.loadCoinBank();
+//        kcomTest.loadCoinBank();
         Collection<Coin> expResult = new ArrayList<>();
         expResult.add(new Coin(CoinType.POUND,  3 ));
         expResult.add(new Coin(CoinType.FIFTY,  3 ));
@@ -180,6 +177,7 @@ public class KComTestTest {
             // Load in the properties file and check its been changed.
         } catch (Exception ex) {
             Logger.getLogger(KComTestTest.class.getName()).log(Level.SEVERE, null, ex);
+            assert(false);            
         }                
     }
         
@@ -193,7 +191,7 @@ public class KComTestTest {
         setupTestCoinBank();
         KComTest kcomTest = new KComTest();
         kcomTest.setCoinBankFileName( testCoinBankFileName );
-        kcomTest.loadCoinBank();
+//        kcomTest.loadCoinBank();
         
         Collection<Coin> result;
         try {

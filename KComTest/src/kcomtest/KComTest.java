@@ -1,7 +1,6 @@
 
 package kcomtest;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,17 +12,16 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 /**
  *
- * @author Chris
+ * @author Chris Milburn
  */
 public class KComTest {
 
     static final Logger log = Logger.getGlobal();
 
-    Properties coinBank = new Properties();
+    Properties coinBank;
     static private String coinBankFileName = "coin-inventory.properties";    
     /**
      * @param args the command line arguments
@@ -34,42 +32,27 @@ public class KComTest {
             KComTest kcomTest = new KComTest();
 
             try {
-                
-                kcomTest.run( args );
-                
-            } catch (Exception ex) {
-                Logger.getLogger(KComTest.class.getName()).log(Level.SEVERE, null, ex);
-            }
+               Integer inputPence = Integer.parseInt( args[0] );
+               // First calculate the optimal coins.
+               Collection<Coin> optimalCoins = kcomTest.getOptimalChangeFor( inputPence );
+               System.out.println("Pence entered = "+inputPence);
+               System.out.println("Optimal distribution");
+               optimalCoins.stream().forEach( System.out::println );
+               // Now calculate using the coins available.
+               Collection<Coin> coinsUsingCoinBank = kcomTest.getChangeFor( inputPence ); 
+               System.out.println("Distribution with coins available");            
+               coinsUsingCoinBank.stream().forEach( System.out::println );             
+
+           } catch( NumberFormatException nfe) {                            
+               log.log(Level.SEVERE, "Invalid number entered. ", args[0]);
+           } catch( Exception ex) {
+               log.log(Level.SEVERE, ex.getMessage());               
+           }
         } else {
             log.log(Level.SEVERE, "No number entered. ");            
         }
     }
     
-    /*
-    Method to handle command line parameters.
-    */
-    public void run(String... args) throws Exception {
-
-        // Load up the initial coins available.
-        loadCoinBank();        
-        
-        try {
-            Integer inputPence = Integer.parseInt( args[0] );
-            // First calculate the optimal coins.
-            Collection<Coin> optimalCoins = getOptimalChangeFor( inputPence );
-            System.out.println("Pence entered = "+inputPence);
-            System.out.println("Optimal distribution");
-            optimalCoins.stream().forEach( System.out::println );
-            // Now calculate using the coins available.
-            Collection<Coin> coinsUsingCoinBank = getChangeFor( inputPence ); 
-            System.out.println("Distribution with coins available");            
-            coinsUsingCoinBank.stream().forEach( System.out::println );             
-            
-        } catch( NumberFormatException e) {                            
-            log.log(Level.SEVERE, "Invalid number entered. ", args[0]);
-        } 
-    }
-
     /*
      Split the number down into the optimum coin set.
     */
@@ -91,9 +74,13 @@ public class KComTest {
     public Collection<Coin> getChangeFor(int pence) throws Exception  {
         List<Coin> coins = new ArrayList<>();
       
+        // Load up the initial coins available.
+        loadCoinBank(); 
+        
         // Iterate over the available coin denominations.
         for(CoinType coinType : CoinType.values() ){
             
+            // Get the number of coins of this type available in the bank.
             int coinsAvailable = Integer.parseInt( coinBank.getProperty( Integer.toString( coinType.getDenomination()) ) );
             
             // No point even testing if there are no coins available.
@@ -113,8 +100,7 @@ public class KComTest {
                     pence -= coinsAvailable * coinType.getDenomination();  
                     // and remove all the coins from the coin bank.
                     coinBank.setProperty( String.valueOf( coinType.getDenomination() ), "0");  
-                } 
-              
+                }               
             }                
         }
         
@@ -129,10 +115,16 @@ public class KComTest {
         return coins;
     }
     
+    /*
+      Load the coin bank from file if it hasnt been loaded yet.
+    */   
     public void loadCoinBank() {
  
-        try {        
-            coinBank.load(  Files.newInputStream(Paths.get( coinBankFileName )));
+        try {
+            if(coinBank == null) {
+                coinBank = new Properties();
+                coinBank.load(  Files.newInputStream(Paths.get( coinBankFileName )));
+            }
         } catch (IOException e) {
             log.log(Level.SEVERE, "Error loading "+coinBankFileName );
         }         
