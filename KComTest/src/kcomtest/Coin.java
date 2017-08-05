@@ -8,14 +8,16 @@ package kcomtest;
 public class Coin {
     private CoinType coinType;
     private int numberOfCoins;
+    private int denomination;
     
     public Coin( CoinType coinType, int numberOfCoins){
         this.coinType = coinType;
         this.numberOfCoins = numberOfCoins;
+        this.denomination = coinType.getDenomination();
     }
     
     public int getDenomination() {
-        return coinType.getDenomination(); 
+        return denomination; 
     }
     public int getNumberOfCoins() {
         return numberOfCoins;
@@ -36,8 +38,7 @@ public class Coin {
                     result = (this.getDenomination() == that.getDenomination() && 
                               this.getNumberOfCoins() == that.getNumberOfCoins());
             }
-        }
-        
+        }        
         return result;
     }
     

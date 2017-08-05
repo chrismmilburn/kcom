@@ -33,16 +33,17 @@ public class KComTest {
 
             try {
                Integer inputPence = Integer.parseInt( args[0] );
-               // First calculate the optimal coins.
-               Collection<Coin> optimalCoins = kcomTest.getOptimalChangeFor( inputPence );
-               System.out.println("Pence entered = "+inputPence);
-               System.out.println("Optimal distribution");
-               optimalCoins.stream().forEach( System.out::println );
-               // Now calculate using the coins available.
-               Collection<Coin> coinsUsingCoinBank = kcomTest.getChangeFor( inputPence ); 
-               System.out.println("Distribution with coins available");            
-               coinsUsingCoinBank.stream().forEach( System.out::println );             
-
+               if( inputPence >= 0 ){
+                // First calculate the optimal coins.
+                Collection<Coin> optimalCoins = kcomTest.getOptimalChangeFor( inputPence );
+                System.out.println("Pence entered = "+inputPence);
+                System.out.println("Optimal distribution");
+                optimalCoins.stream().forEach( System.out::println );
+                // Now calculate using the coins available.
+                Collection<Coin> coinsUsingCoinBank = kcomTest.getChangeFor( inputPence ); 
+                System.out.println("Distribution with coins available");            
+                coinsUsingCoinBank.stream().forEach( System.out::println );             
+               }
            } catch( NumberFormatException nfe) {                            
                log.log(Level.SEVERE, "Invalid number entered. ", args[0]);
            } catch( Exception ex) {
@@ -82,26 +83,22 @@ public class KComTest {
             
             // Get the number of coins of this type available in the bank.
             int coinsAvailable = Integer.parseInt( coinBank.getProperty( Integer.toString( coinType.getDenomination()) ) );
-            
-            // No point even testing if there are no coins available.
-            if(coinsAvailable > 0) {
-                            
-                int coinsRequired = pence / coinType.getDenomination();
-                
-                // See if these coins are available, if not take what we've got.                
-                if( coinsRequired <= coinsAvailable) {
-                    coins.add(new Coin(coinType, coinsRequired));  
-                    pence -= coinsRequired * coinType.getDenomination(); 
-                    // and remove that many  coins from the coin bank.
-                    coinBank.setProperty( String.valueOf( coinType.getDenomination() ), String.valueOf( coinsAvailable - coinsRequired ));                      
-                } else {
-                    // Not enough coins are available so take what we've got.
-                    coins.add(new Coin(coinType, coinsAvailable));
-                    pence -= coinsAvailable * coinType.getDenomination();  
-                    // and remove all the coins from the coin bank.
-                    coinBank.setProperty( String.valueOf( coinType.getDenomination() ), "0");  
-                }               
-            }                
+                                        
+            int coinsRequired = pence / coinType.getDenomination();
+
+            // See if these coins are available, if not take what we've got.                
+            if( coinsRequired <= coinsAvailable) {
+                coins.add(new Coin(coinType, coinsRequired));  
+                pence -= coinsRequired * coinType.getDenomination(); 
+                // and remove that many  coins from the coin bank.
+                coinBank.setProperty( String.valueOf( coinType.getDenomination() ), String.valueOf( coinsAvailable - coinsRequired ));                      
+            } else {
+                // Not enough coins are available so take what we've got.
+                coins.add(new Coin(coinType, coinsAvailable));
+                pence -= coinsAvailable * coinType.getDenomination();  
+                // and remove all the coins from the coin bank.
+                coinBank.setProperty( String.valueOf( coinType.getDenomination() ), "0");  
+            }               
         }
         
         if( pence > 0) {

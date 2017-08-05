@@ -26,8 +26,7 @@ public class KComTestTest {
      * Test of getOptimalChangeFor method, of class KComTest.
      */
     @Test
-    public void testGetOptimalChangeFor() {
-        System.out.println("getOptimalChangeFor");
+    public void testGetOptimalChangeFor_NoCoinSubstitution() {
         int pence = 366;
         KComTest instance = new KComTest();
         Collection<Coin> expResult = new ArrayList<>();
@@ -63,25 +62,7 @@ public class KComTestTest {
     }    
 
     /**
-     * Test of run method, of class KComTest.
-     */
- /*
-    @Test
-    public void testRun() {
-
-        String[] args = {"366"};
-        KComTest instance = new KComTest();
-        try {
-            instance.run( args );
-        } catch (Exception ex) {
-            assert( false );
-            Logger.getLogger(KComTestTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        assert( false );
-    }
-*/
-    /**
-     * Test of getChangeFor method where there is sufficent of each coin available.
+     * Test of getChangeFor method where there is sufficient of each coin available.
      */
     @Test
     public void testGetChangeFor() {
@@ -118,7 +99,6 @@ public class KComTestTest {
         setupTestCoinBank();
         KComTest kcomTest = new KComTest();
         kcomTest.setCoinBankFileName( testCoinBankFileName );
-//        kcomTest.loadCoinBank();
       
         Collection<Coin> result;
         try {
@@ -130,13 +110,12 @@ public class KComTestTest {
                 newCoinBank.load(  Files.newInputStream(Paths.get( testCoinBankFileName )));
                 // Create what should be left in the coin bank...
                 Properties expectedCoinBank = new Properties();
-                // Lets start off with 3 of all the coins.
                 expectedCoinBank.setProperty( String.valueOf( CoinType.POUND.getDenomination() ),"0");
                 expectedCoinBank.setProperty( String.valueOf( CoinType.FIFTY.getDenomination()), "2");
                 expectedCoinBank.setProperty( String.valueOf( CoinType.TWENTY.getDenomination()),"3");
                 expectedCoinBank.setProperty( String.valueOf( CoinType.TEN.getDenomination()),   "2");
                 expectedCoinBank.setProperty( String.valueOf( CoinType.FIVE.getDenomination()),  "2");
-                expectedCoinBank.setProperty( String.valueOf( CoinType.TWO.getDenomination()),   "3");
+                expectedCoinBank.setProperty( String.valueOf( CoinType.TWO.getDenomination()),   "0");
                 expectedCoinBank.setProperty( String.valueOf( CoinType.ONE.getDenomination()),   "2");
                 
                 // and check that is whats left.
@@ -156,19 +135,18 @@ public class KComTestTest {
      */
     @Test
     public void testGetChangeFor_WithCoinSubstitution() {
-        int pence = 499;
+        int pence = 498;
         setupTestCoinBank();
         KComTest kcomTest = new KComTest();
         kcomTest.setCoinBankFileName( testCoinBankFileName );
-//        kcomTest.loadCoinBank();
         Collection<Coin> expResult = new ArrayList<>();
         expResult.add(new Coin(CoinType.POUND,  3 ));
         expResult.add(new Coin(CoinType.FIFTY,  3 ));
         expResult.add(new Coin(CoinType.TWENTY, 2 ));
         expResult.add(new Coin(CoinType.TEN,    0 ));
         expResult.add(new Coin(CoinType.FIVE,   1 ));
-        expResult.add(new Coin(CoinType.TWO,    2 ));
-        expResult.add(new Coin(CoinType.ONE,    0 ));
+        expResult.add(new Coin(CoinType.TWO,    0 ));
+        expResult.add(new Coin(CoinType.ONE,    3 ));
         
         Collection<Coin> result;
         try {
@@ -179,19 +157,34 @@ public class KComTestTest {
             Logger.getLogger(KComTestTest.class.getName()).log(Level.SEVERE, null, ex);
             assert(false);            
         }                
-    }
-        
-      
-   /**
-     * Test of getChangeFor method where there is not sufficient coins available.
+    }        
+    /**
+     * Test of getChangeFor method where there IS enough in total but not enough 
+     * of the right type of coins available.
      */
+    @Test
+    public void testGetChangeFor_WithCoinSubstitutionButStillFails() {
+        int pence = 499;
+        setupTestCoinBank();
+        KComTest kcomTest = new KComTest();
+        kcomTest.setCoinBankFileName( testCoinBankFileName );
+        
+        Collection<Coin> result;        
+        try {
+            result = kcomTest.getChangeFor( pence );            
+
+        } catch (Exception ex) {
+            assert( ex.getMessage().equals("Insufficent coins available"));
+            Logger.getLogger(KComTestTest.class.getName()).log(Level.SEVERE, null, ex);
+        }                
+    }       
+ 
     @Test
     public void testGetChangeFor_BlowingTheBank() {
         int pence = 1000;
         setupTestCoinBank();
         KComTest kcomTest = new KComTest();
         kcomTest.setCoinBankFileName( testCoinBankFileName );
-//        kcomTest.loadCoinBank();
         
         Collection<Coin> result;
         try {
@@ -209,13 +202,13 @@ public class KComTestTest {
     private void setupTestCoinBank() {
 
         Properties coinBank = new Properties();
-        // Lets start off with 3 of all the coins.
+        // Setup our coin bank - note there are no two penny coins.
         coinBank.setProperty( String.valueOf( CoinType.POUND.getDenomination() ),"3");
         coinBank.setProperty( String.valueOf( CoinType.FIFTY.getDenomination()), "3");
         coinBank.setProperty( String.valueOf( CoinType.TWENTY.getDenomination()),"3");
         coinBank.setProperty( String.valueOf( CoinType.TEN.getDenomination()),   "3");
         coinBank.setProperty( String.valueOf( CoinType.FIVE.getDenomination()),  "3");
-        coinBank.setProperty( String.valueOf( CoinType.TWO.getDenomination()),   "3");
+        coinBank.setProperty( String.valueOf( CoinType.TWO.getDenomination()),   "0");
         coinBank.setProperty( String.valueOf( CoinType.ONE.getDenomination()),   "3");        
         
         try {

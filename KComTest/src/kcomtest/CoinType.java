@@ -3,7 +3,8 @@ package kcomtest;
 
 /**
  *
- * @author Chris
+ * @author Chris Milburn
+ * Enum containing all the possible coin types available.
  */
 public enum CoinType {
     POUND(100),
