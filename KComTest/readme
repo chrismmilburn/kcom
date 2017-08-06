@@ -1,1 +1,32 @@
 
+To Build load into IDE (I used netbeans and clean-build) otherwise build using the Ant build.xml file in the project home directory.
+
+ant -f build.xml
+
+To run from the command line go into the project home directory and run :-
+
+java -jar dist\KComTest.jar XXX
+
+where XXX is the number of pence.
+
+e.g.
+C:\Users\Chris\Documents\KComTest\kcomTest\KComTest>java -jar dist\KComTest.jar 233
+
+Pence entered = 233
+Optimal distribution
+For denomination POUND 2 coins.
+For denomination FIFTY 0 coins.
+For denomination TWENTY 1 coins.
+For denomination TEN 1 coins.
+For denomination FIVE 0 coins.
+For denomination TWO 1 coins.
+For denomination ONE 1 coins.
+Distribution with coins available
+For denomination POUND 2 coins.
+For denomination FIFTY 0 coins.
+For denomination TWENTY 0 coins.
+For denomination TEN 3 coins.
+For denomination FIVE 0 coins.
+For denomination TWO 1 coins.
+For denomination ONE 1 coins.
+
