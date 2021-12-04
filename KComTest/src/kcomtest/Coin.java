@@ -4,6 +4,7 @@ package kcomtest;
 /**
  *
  * @author Chris Milburn
+ * *
  */
 public class Coin {
     private CoinType coinType;
